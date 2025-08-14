@@ -1,0 +1,14 @@
+{
+  "/api/responses/route": "/api/responses",
+  "/api/questions/route": "/api/questions",
+  "/api/results/route": "/api/results",
+  "/_not-found/page": "/_not-found",
+  "/api/auth/route": "/api/auth",
+  "/favicon.ico/route": "/favicon.ico",
+  "/auth/callback/route": "/auth/callback",
+  "/home/page": "/home",
+  "/login/page": "/login",
+  "/page": "/",
+  "/quiz/page": "/quiz",
+  "/signup/page": "/signup"
+}
