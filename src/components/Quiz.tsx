@@ -90,7 +90,7 @@ export default function Quiz() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: user.id, // Replace with actual user ID from auth
+          userId: user.id,
           totalQuestions: questions.length,
           correctAnswers,
           timeTaken,

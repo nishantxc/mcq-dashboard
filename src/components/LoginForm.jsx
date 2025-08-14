@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { signInWithEmail, signInWithGoogle, checkUserInTable } from '../../supabase/Supabase';
+import { signInWithEmail, signInWithGoogle } from '../../supabase/Supabase';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { adduserProfile } from '@/store/slices/userSlice';
@@ -56,9 +56,9 @@ const LoginForm = ({ onLoginSuccess }) => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
-      <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-0 bg-white shadow-xl rounded-2xl overflow-hidden">
+      <div className="w-full max-w-fit grid grid-cols-1 gap-0 bg-white shadow-xl rounded-2xl overflow-hidden">
         {/* Left Panel - Feature Showcase */}
-        <div className="hidden lg:flex flex-col justify-center bg-slate-900 text-white p-12">
+        {/* <div className="hidden lg:flex flex-col justify-center bg-slate-900 text-white p-12">
           <div className="space-y-8">
             <div>
               <h1 className="text-4xl font-bold mb-4">Knowledge Management Platform</h1>
@@ -103,7 +103,7 @@ const LoginForm = ({ onLoginSuccess }) => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Right Panel - Login Form */}
         <div className="flex items-center justify-center p-12">
@@ -171,7 +171,7 @@ const LoginForm = ({ onLoginSuccess }) => {
               <motion.button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3 bg-black hover:bg-black/70 text-white font-medium rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 whileHover={{ scale: isLoading ? 1 : 1.01 }}
                 whileTap={{ scale: isLoading ? 1 : 0.99 }}
               >

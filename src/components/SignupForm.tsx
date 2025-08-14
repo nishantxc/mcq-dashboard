@@ -79,7 +79,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSignupSuccess }) => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
-      <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-0 bg-white shadow-xl rounded-2xl overflow-hidden">
+      <div className="w-full max-w-fit grid grid-cols-1 gap-0 bg-white shadow-xl rounded-2xl overflow-hidden">
         {/* Left Panel - Registration Form */}
         <div className="flex items-center justify-center p-12">
           <motion.div
@@ -128,27 +128,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSignupSuccess }) => {
                   placeholder="Create a secure password"
                   required
                 />
-                
-                {/* Password strength indicator */}
-                {signupData.password && (
-                  <div className="mt-2">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs text-slate-600">Password strength</span>
-                      <span className={`text-xs font-medium ${
-                        strength.strength === 1 ? 'text-red-600' : 
-                        strength.strength === 2 ? 'text-yellow-600' : 'text-green-600'
-                      }`}>
-                        {strength.text}
-                      </span>
-                    </div>
-                    <div className="w-full bg-slate-200 rounded-full h-2">
-                      <div 
-                        className={`h-2 rounded-full transition-all duration-300 ${strength.color}`}
-                        style={{ width: `${(strength.strength / 3) * 100}%` }}
-                      />
-                    </div>
-                  </div>
-                )}
+              
               </div>
 
               {/* Terms checkbox */}
@@ -196,7 +176,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSignupSuccess }) => {
               <motion.button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3 bg-black hover:bg-black/70 text-white font-medium rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 whileHover={{ scale: isLoading ? 1 : 1.01 }}
                 whileTap={{ scale: isLoading ? 1 : 0.99 }}
               >
@@ -261,70 +241,6 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSignupSuccess }) => {
               <p className="mt-1">🔒 256-bit SSL encryption • ⚡ 99.9% uptime SLA</p>
             </div> */}
           </motion.div>
-        </div>
-
-        {/* Right Panel - Features */}
-        <div className="hidden lg:flex flex-col justify-center bg-slate-900 text-white p-12">
-          <div className="space-y-8">
-            <div>
-              <h1 className="text-4xl font-bold mb-4">Join the Platform</h1>
-              <p className="text-xl text-slate-300">Start your professional development journey today.</p>
-            </div>
-            
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-blue-600 flex items-center justify-center">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">Expert Community</h3>
-                  <p className="text-slate-400">Connect with industry professionals and subject matter experts.</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-blue-600 flex items-center justify-center">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.031 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">Certified Programs</h3>
-                  <p className="text-slate-400">Earn industry-recognized certifications and credentials.</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-blue-600 flex items-center justify-center">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">Career Growth</h3>
-                  <p className="text-slate-400">Track your progress and accelerate your professional development.</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-12 p-6 bg-slate-800 rounded-xl">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                  98%
-                </div>
-                <div>
-                  <p className="font-semibold">Student Success Rate</p>
-                  <p className="text-slate-400 text-sm">Complete their learning objectives</p>
-                </div>
-              </div>
-              <p className="text-slate-300 text-sm">
-                "This platform transformed my career trajectory. The structured approach and expert guidance made all the difference."
-              </p>
-              <p className="text-slate-400 text-xs mt-2">— Sarah Chen, Senior Data Scientist</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>

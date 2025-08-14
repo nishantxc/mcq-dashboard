@@ -43,14 +43,3 @@ export const getCurrentUser = async () => {
   const { data, error } = await supabase.auth.getUser()
   return { user: data?.user, error }
 }
-
-// Check if user exists in the "users" table
-export const checkUserInTable = async (userId: String) => {
-  const { data, error } = await supabase
-    .from('users')
-    .select('user_id')
-    .eq('user_id', userId)
-    .single()
-
-  return { exists: !!data, error }
-}
