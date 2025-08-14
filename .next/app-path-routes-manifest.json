@@ -1,14 +1,14 @@
 {
   "/api/responses/route": "/api/responses",
-  "/api/questions/route": "/api/questions",
-  "/api/results/route": "/api/results",
-  "/_not-found/page": "/_not-found",
   "/api/auth/route": "/api/auth",
-  "/favicon.ico/route": "/favicon.ico",
+  "/api/questions/route": "/api/questions",
   "/auth/callback/route": "/auth/callback",
-  "/home/page": "/home",
-  "/login/page": "/login",
-  "/page": "/",
+  "/_not-found/page": "/_not-found",
+  "/api/results/route": "/api/results",
+  "/favicon.ico/route": "/favicon.ico",
   "/quiz/page": "/quiz",
-  "/signup/page": "/signup"
+  "/home/page": "/home",
+  "/page": "/",
+  "/signup/page": "/signup",
+  "/login/page": "/login"
 }

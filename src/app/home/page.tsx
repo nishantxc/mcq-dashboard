@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { supabase } from '../../../supabase/Supabase';
 import Header from '@/components/ui/Header';
 import QuizHistory from '@/components/QuizHistory';
 import { div } from 'framer-motion/client';
 import { QuizAttempt } from '@/types/quiz';
+import { adduserProfile } from '@/store/slices/userSlice';
 
 interface QuizResult {
     id: string;
@@ -28,6 +29,7 @@ export default function HomePage() {
     const [isLoading, setIsLoading] = useState(true);
     const userProfile = useSelector((state: RootState) => state.userProfile);
 
+    const dispatch = useDispatch();
 
     useEffect(() => {
         fetchQuizHistory();
@@ -71,11 +73,45 @@ export default function HomePage() {
     const handleLogout = async () => {
         try {
             await supabase.auth.signOut();
+            dispatch(adduserProfile({
+                id: '',
+                user_id: '',
+                username: '',
+                avatar: ''
+            }));
             router.push('/login');
         } catch (error) {
             console.error('Error signing out:', error);
         }
     };
+
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) {
+                    router.push('/login');
+                    return;
+                }
+
+                // Set user profile in Redux
+                const userProfile = {
+                    id: session.user.id,
+                    user_id: session.user.id,
+                    username: session.user.email?.split('@')[0] || 'User',
+                    avatar: '',  // You can add default avatar if needed
+                };
+                dispatch(adduserProfile(userProfile));
+                setLoading(false);
+            } catch (error) {
+                console.error('Auth error:', error);
+                router.push('/login');
+            }
+        };
+
+        checkAuth();
+    }, [dispatch, router]);
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">

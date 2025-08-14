@@ -1,3 +1,4 @@
+// File: /Users/react-js/Desktop/mcq/src/app/quiz/page.tsx
 import * as entry from '../../../../src/app/quiz/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

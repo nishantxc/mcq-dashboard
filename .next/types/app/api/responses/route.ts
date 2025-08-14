@@ -1,3 +1,4 @@
+// File: /Users/react-js/Desktop/mcq/src/app/api/responses/route.ts
 import * as entry from '../../../../../src/app/api/responses/route.js'
 import type { NextRequest } from 'next/server.js'
 
