@@ -1,8 +1,9 @@
-import { NextResponse } from 'next/server';
-import { supabase } from '../../../../supabase/Supabase';
+import { getSupabaseWithUser } from '@/utils/userFromSb';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    const {user, supabase} = await getSupabaseWithUser(request)
     const body = await request.json();
     const { 
       userId,
@@ -78,10 +79,11 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
+    const {user, supabase} = await getSupabaseWithUser(request)
     const url = new URL(request.url);
-    const userId = url.searchParams.get('userId');
+    const userId = url.searchParams.get('userId') || user?.id;
 
     if (!userId) {
       return NextResponse.json({ error: 'User ID is required' }, { status: 400 });

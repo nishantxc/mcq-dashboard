@@ -1,13 +1,13 @@
 "use client"
 
-import { redirect, useRouter } from 'next/navigation';
 import Quiz from '@/components/Quiz';
-import { supabase } from '../../../supabase/Supabase';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '@/store/store';
-import { useState, useEffect } from 'react';
-import { adduserProfile } from '@/store/slices/userSlice';
 import Header from '@/components/ui/Header';
+import { adduserProfile } from '@/store/slices/userSlice';
+import { RootState } from '@/store/store';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { supabase } from '../../../supabase/Supabase';
 
 export default function QuizPage() {
     const [loading, setLoading] = useState(true);

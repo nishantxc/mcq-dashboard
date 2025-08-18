@@ -1,8 +1,10 @@
-import { NextResponse } from 'next/server';
-import { supabase } from '../../../../supabase/Supabase';
+import { NextRequest, NextResponse } from 'next/server';
+// import { supabase } from '../../../../supabase/Supabase';
+import { getSupabaseWithUser } from '@/utils/userFromSb';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const {user, supabase} = await getSupabaseWithUser(request)
     const { data: questions, error } = await supabase
       .from('questions')
       .select('*');
@@ -26,8 +28,9 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    const {user, supabase} = await getSupabaseWithUser(request)
     const body = await request.json();
     const { question, options, correct_answer } = body;
 

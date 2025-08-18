@@ -1,7 +1,12 @@
-import React, { useState, FormEvent, ChangeEvent } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { signUpWithEmail, signInWithGoogle } from '../../supabase/Supabase';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { signInWithGoogle, signUpWithEmail } from '../../supabase/Supabase';
+import { User } from '@/types/types';
+import { adduserProfile } from '@/store/slices/userSlice';
+import { useDispatch } from 'react-redux';
 
 interface SignupFormProps {
   onSignupSuccess?: () => void;
@@ -19,29 +24,42 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSignupSuccess }) => {
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
 
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setIsLoading(true);
     setAuthError(null);
-    
+
     try {
       const result = await signUpWithEmail(signupData.email, signupData.password);
       if (result.error) {
-        setAuthError(result.error.message);
+        const message = result.error.message || 'Signup failed';
+        setAuthError(message);
+        toast.error(message, { position: 'top-right', autoClose: 4000 });
         setIsLoading(false);
         return;
       }
-      
+      const userProfile: User = {
+        id: result?.data?.user?.id || '',
+        user_id: result?.data?.user?.id || '',
+        username: result?.data?.user?.email?.split('@')[0] || 'User',
+        avatar: '',
+      };
+
+      dispatch(adduserProfile(userProfile));
+      toast.success('Account created successfully', { position: 'top-right', autoClose: 2500 });
       setShowSuccess(true);
       setTimeout(() => {
-        if (onSignupSuccess) { 
-          router.push('/home'); 
-          onSignupSuccess(); 
+        if (onSignupSuccess) {
+          router.push('/home');
+          onSignupSuccess();
         }
       }, 1000);
     } catch (error: any) {
-      setAuthError(error.message);
+      const message = error?.message || 'An unexpected error occurred';
+      setAuthError(message);
+      toast.error(message, { position: 'top-right', autoClose: 5000 });
     } finally {
       setIsLoading(false);
     }
@@ -51,13 +69,22 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSignupSuccess }) => {
     setIsLoading(true);
     setAuthError(null);
     try {
-      const { error } = await signInWithGoogle();
-      if (error) {
-        setAuthError(error.message);
+      const result = await signInWithGoogle();
+      if (result?.error) {
+        const message = result.error.message || 'Google sign-in failed';
+        setAuthError(message);
+        toast.error(message, { position: 'top-right', autoClose: 4000 });
         setIsLoading(false);
+        return;
       }
+
+      toast.success('Signed up with Google', { position: 'top-right', autoClose: 2500 });
     } catch (error: any) {
-      setAuthError(error.message);
+      const message = error?.message || 'An unexpected error occurred';
+      setAuthError(message);
+      toast.error(message, { position: 'top-right', autoClose: 5000 });
+      setIsLoading(false);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -79,6 +106,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSignupSuccess }) => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
+      <ToastContainer />
       <div className="w-full max-w-fit grid grid-cols-1 gap-0 bg-white shadow-xl rounded-2xl overflow-hidden">
         {/* Left Panel - Registration Form */}
         <div className="flex items-center justify-center p-12">
@@ -128,7 +156,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSignupSuccess }) => {
                   placeholder="Create a secure password"
                   required
                 />
-              
+
               </div>
 
               {/* Terms checkbox */}

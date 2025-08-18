@@ -105,6 +105,47 @@ export const authAPI = {
   },
 }
 
+
+export const questionsAPI = {
+  getQuestions: async (limit: number = 10) => {
+    return apiRequest(`/api/questions?limit=${limit}`, {
+      method: 'GET',
+    })
+  }, 
+}
+
+export const resultsAPI = {
+  getResults: async (userId: string) => {
+    return apiRequest(`/api/results?userId=${userId}`, {
+      method: 'GET',
+    })
+  },
+  saveResult: async (result: any) => {
+    return apiRequest('/api/results', {
+      method: 'POST',
+      body: JSON.stringify(result),
+    })
+  },
+}
+
+
+export const responsesAPI = {
+  getResponses: async (userId: string) => {
+    return apiRequest(`/api/responses?userId=${userId}`, {
+      method: 'GET',
+    })
+  },
+  saveResponses: async (responses: any) => {
+    return apiRequest('/api/responses', {    
+      method: 'POST', 
+      body: JSON.stringify(responses),
+    })
+  },
+} 
+
 export const api = {
   auth: authAPI,
+  questions: questionsAPI,
+  results: resultsAPI,
+  responses: responsesAPI
 }

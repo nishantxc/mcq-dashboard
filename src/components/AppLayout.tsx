@@ -1,17 +1,11 @@
 "use client"
 
-import React, { useEffect, useState } from 'react';
-import { persistor, store } from '../store/store'
-import { Provider } from 'react-redux'
-import { motion } from 'framer-motion';
-import { User } from '@/types/types';
-import { api } from '@/utils/api';
-import { getCurrentUser, signOut } from '../../supabase/Supabase';
-import { useRouter } from 'next/navigation';
-import { LogOut } from 'lucide-react';
-import { PersistGate } from 'redux-persist/integration/react';
+import React from 'react';
+import { Provider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistor, store } from '../store/store';
 
 interface AppLayoutProps {
   children: React.ReactNode;

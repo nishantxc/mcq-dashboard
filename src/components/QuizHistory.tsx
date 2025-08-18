@@ -1,10 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { QuizAttempt } from '@/types/quiz';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/store/store';
-import Header from '@/components/ui/Header';
 
 type QuizHist = {
   attempts: QuizAttempt[];

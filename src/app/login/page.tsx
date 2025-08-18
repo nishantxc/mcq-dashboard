@@ -1,10 +1,10 @@
-"use client";
+"use client"
 
-import React, { useState, useEffect } from 'react';
-import SignupForm from '../../components/SignupForm';
+import { useEffect, useState } from 'react';
 import { getCurrentUser } from '../../../supabase/Supabase';
+import LoginForm from '../../components/LoginForm';
 
-const SignupPage = () => {
+const LoginPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -18,8 +18,8 @@ const SignupPage = () => {
   }, []);
 
   return (
-      <SignupForm onSignupSuccess={() => setIsLoggedIn(true)} />
+      <LoginForm onLoginSuccess={() => setIsLoggedIn(true)} />
   );
 };
 
-export default SignupPage;
+export default LoginPage;

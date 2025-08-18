@@ -2,19 +2,26 @@
 
 import { LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { supabase } from '../../../supabase/Supabase';
+import { clear } from 'console';
+import { clearuserProfile } from '@/store/slices/userSlice';
+import { toast } from 'react-toastify';
 
 export default function Header() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const userProfile = useSelector((state: RootState) => state.userProfile);
 
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
+      dispatch(clearuserProfile());
+      toast.success('Logged out successfully!', { position: 'top-right', autoClose: 2500 });
       router.push('/login');
     } catch (error) {
+      toast.error('Error Logging out!', { position: 'top-right', autoClose: 2500 });
       console.error('Error signing out:', error);
     }
   };

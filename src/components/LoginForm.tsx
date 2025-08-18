@@ -1,20 +1,31 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { signInWithEmail, signInWithGoogle } from '../../supabase/Supabase';
-import { useRouter } from 'next/navigation';
-import { useDispatch } from 'react-redux';
 import { adduserProfile } from '@/store/slices/userSlice';
-import { api } from '@/utils/api';
+import { User } from '@/types/types';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { signInWithEmail, signInWithGoogle } from '../../supabase/Supabase';
 
-const LoginForm = ({ onLoginSuccess }) => {
-  const [loginData, setLoginData] = useState({ email: '', password: '' });
-  const [isLoading, setIsLoading] = useState(false);
-  const [authError, setAuthError] = useState(null);
+interface LoginFormProps {
+  onLoginSuccess?: () => void;
+}
+
+interface LoginData {
+  email: string;
+  password: string;
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
+  const [loginData, setLoginData] = useState<LoginData>({ email: '', password: '' });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setAuthError(null);
@@ -22,15 +33,28 @@ const LoginForm = ({ onLoginSuccess }) => {
     try {
       const result = await signInWithEmail(loginData.email, loginData.password);
       if (result.error) {
-        setAuthError(result.error.message);
+        const message = result.error.message || 'Login failed';
+        setAuthError(message);
+        toast.error(message, { position: 'top-right', autoClose: 4000 });
         setIsLoading(false);
         return;
       }
-      dispatch(adduserProfile(result.user));
+      const userProfile: User = {
+        id: result?.data?.user?.id || '',
+        user_id: result?.data?.user?.id || '',
+        username: result?.data?.user?.email?.split('@')[0] || 'User',
+        avatar: '',
+      };
+
+      dispatch(adduserProfile(userProfile));
+      toast.success('Signed in successfully', { position: 'top-right', autoClose: 2500 });
+      if (onLoginSuccess) onLoginSuccess();
       router.push('/home');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error);
-      setAuthError(error.message);
+      const message = error?.message || 'An unexpected error occurred';
+      setAuthError(message);
+      toast.error(message, { position: 'top-right', autoClose: 5000 });
     } finally {
       setIsLoading(false);
     }
@@ -42,13 +66,21 @@ const LoginForm = ({ onLoginSuccess }) => {
     try {
       const result = await signInWithGoogle();
       if (result.error) {
-        setAuthError(result.error.message);
+        const message = result.error.message || 'Google sign-in failed';
+        setAuthError(message);
+        toast.error(message, { position: 'top-right', autoClose: 4000 });
         setIsLoading(false);
         return;
       }
+
+      toast.success('Signed in with Google', { position: 'top-right', autoClose: 2500 });
       if (onLoginSuccess) onLoginSuccess();
-    } catch (error) {
-      setAuthError(error.message);
+      // If signInWithGoogle returns user data and you want to set it in redux, do that here
+      router.push('/home');
+    } catch (error: any) {
+      const message = error?.message || 'An unexpected error occurred';
+      setAuthError(message);
+      toast.error(message, { position: 'top-right', autoClose: 5000 });
     } finally {
       setIsLoading(false);
     }
@@ -56,55 +88,8 @@ const LoginForm = ({ onLoginSuccess }) => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
+      <ToastContainer />
       <div className="w-full max-w-fit grid grid-cols-1 gap-0 bg-white shadow-xl rounded-2xl overflow-hidden">
-        {/* Left Panel - Feature Showcase */}
-        {/* <div className="hidden lg:flex flex-col justify-center bg-slate-900 text-white p-12">
-          <div className="space-y-8">
-            <div>
-              <h1 className="text-4xl font-bold mb-4">Knowledge Management Platform</h1>
-              <p className="text-xl text-slate-300">Streamline your learning process with advanced analytics and tracking.</p>
-            </div>
-            
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-blue-600 flex items-center justify-center">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">Advanced Analytics</h3>
-                  <p className="text-slate-400">Comprehensive performance tracking and detailed progress reports.</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-blue-600 flex items-center justify-center">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">Real-time Feedback</h3>
-                  <p className="text-slate-400">Instant performance analysis and adaptive learning recommendations.</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-blue-600 flex items-center justify-center">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">Enterprise Security</h3>
-                  <p className="text-slate-400">Bank-level encryption and SOC 2 compliant data protection.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> */}
-
         {/* Right Panel - Login Form */}
         <div className="flex items-center justify-center p-12">
           <motion.div
@@ -123,14 +108,19 @@ const LoginForm = ({ onLoginSuccess }) => {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Email field */}
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-slate-700 mb-2"
+                >
                   Email Address
                 </label>
                 <input
                   id="email"
                   type="email"
                   value={loginData.email}
-                  onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    setLoginData({ ...loginData, email: e.target.value })
+                  }
                   className="text-gray-600 w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   placeholder="Enter your email"
                   required
@@ -139,14 +129,19 @@ const LoginForm = ({ onLoginSuccess }) => {
 
               {/* Password field */}
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-2">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-slate-700 mb-2"
+                >
                   Password
                 </label>
                 <input
                   id="password"
                   type="password"
                   value={loginData.password}
-                  onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    setLoginData({ ...loginData, password: e.target.value })
+                  }
                   className="text-gray-600 w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   placeholder="Enter your password"
                   required
@@ -189,8 +184,9 @@ const LoginForm = ({ onLoginSuccess }) => {
                 )}
               </motion.button>
 
-              {/* Google Sign In Button */}
-              {/* <motion.button
+              {/* Google Sign In Button (optional) */}
+              {/* 
+              <motion.button
                 type="button"
                 onClick={handleGoogleSignIn}
                 disabled={isLoading}
@@ -205,7 +201,8 @@ const LoginForm = ({ onLoginSuccess }) => {
                   <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
                 </svg>
                 <span>Continue with Google</span>
-              </motion.button> */}
+              </motion.button>
+              */}
 
               {/* Sign up link */}
               <div className="text-center">
@@ -219,12 +216,6 @@ const LoginForm = ({ onLoginSuccess }) => {
                 </button>
               </div>
             </form>
-
-            {/* Footer */}
-            {/* <div className="text-center mt-8 text-xs text-slate-500">
-              <p>Protected by enterprise-grade security</p>
-              <p className="mt-1">🔒 256-bit SSL encryption • ⚡ 99.9% uptime SLA</p>
-            </div> */}
           </motion.div>
         </div>
       </div>

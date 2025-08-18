@@ -1,8 +1,9 @@
-import { NextResponse } from 'next/server';
-import { supabase } from '../../../../supabase/Supabase';
+import { getSupabaseWithUser } from '@/utils/userFromSb';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    const {user, supabase} = await getSupabaseWithUser(request)
     const body = await request.json();
     const { 
       userId,
